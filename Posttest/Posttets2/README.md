@@ -40,16 +40,76 @@ Program terdiri dari tiga kelas utama yang saling berinteraksi:
 
 Pengujian dilakukan langsung pada bagian *main code* dengan skenario sebagai berikut:
 
-1. **Pengujian Class `Hero`**: Membuat 3 objek hero, menampilkan statistik (`tampilkan_stats()`), memvalidasi tipe hero dengan static method (`validasi_tipehero()`), dan mereset counter hero dengan class method (`reset_daftar()`).
-2. **Pengujian Class `Misi`**: Membuat 2 objek misi/insiden dan menampilkan detail informasi misi (`info_incident()`).
-3. **Pengujian Class `Dispatcher` & Interaksi Objek**: 
-   * Membuat objek operator dan menampilkan datanya (`info_operator()`).
-   * Melakukan verifikasi password (`verifikasi_kode_akses()`).
-   * Memproses penugasan tim hero ke lokasi misi (`dispatch_tim_hero()`).
-   * Menguji perubahan status hero menjadi *Resting* setelah misi serta memulihkannya kembali menjadi *Standby* (`beristirahat()`).
-4. **Pengujian Setter Data Valid**: Mengubah atribut privat (`persentase_sukses`, `reputasi_reward`, `total_dispatch`) menggunakan nilai yang memenuhi syarat validasi.
-5. **Pengujian Setter Data Tidak Valid (Exception Handling)**: Menguji ketahanan program dengan memasukkan data tidak valid (nilai melebihi batas, tipe data salah, angka negatif/nol) menggunakan blok `try-except` untuk memastikan error berhasil ditangkap dengan baik.
+### 1. Pengujian Class `Hero`
+Menguji pembuatan objek hero, pemanggilan *instance method* (`tampilkan_stats`), *static method* (`validasi_tipehero`), dan *class method* (`ubah_maksimal_tim`):
 
+```python
+hero1 = Hero("Invisigal", "Intelligence", 85, "Standby", 90)
+hero2 = Hero("Blonde Blazer", "Power", 90, "Standby", 95)
+hero3 = Hero("Coupe", "Mobility", 75, "Standby", 85)
+
+# Instance Method
+hero1.tampilkan_stats()
+hero2.tampilkan_stats()
+
+# Static Method
+print(f"Tipe 'Intelligence' -> {Hero.validasi_tipehero('Intelligence')}")
+
+# Class Method
+Hero.ubah_maksimal_tim(4)
+
+### 2. Pengujian Class `Misi`
+Menguji pembuatan objek insiden/misi dan menampilkan detail informasinya (info_incident):
+inc1 = Misi("INC-01", "Penyelidikan Villain", "Downtown", ["Intelligence", "Mobility"], 150)
+inc2 = Misi("INC-02", "Kebakaran Gedung", "Sector 7", ["Power"], 80)
+
+# Instance Method
+inc1.info_incident()
+inc2.info_incident()
+
+### 3. Pengujian Class `Dispatcher`
+Menguji verifikasi kode akses, eksekusi dispatch hero ke lokasi misi, serta mekanisme perubahan status kesiapan hero:
+
+operator1 = Dispatcher("Player 1", "Night Shift", "Meja Utama 01", "PASS-1234")
+
+# Verifikasi Kode Akses
+operator1.verifikasi_kode_akses("PASS-1234")
+
+# Eksekusi Dispatch Tim Hero
+operator1.dispatch_tim_hero([hero1, hero3], inc1)
+
+
+hero1.beristirahat()
+hero1.tampilkan_stats()
+
+### 4. Pengujian Setter dengan Data Valid
+Menguji pembaruan nilai pada atribut privat melalui @setter menggunakan data yang memenuhi syarat validasi:
+
+hero2.persentase_sukses = 98
+inc2.reputasi_reward = 120
+
+### 5. Pengujian Setter dengan Data Tidak Valid (Exception Handling)
+Menguji ketahanan program menggunakan blok try-except saat diberi input yang melanggar aturan validasi (misal: nilai di luar batas rentang, tipe data salah, angka bernilai negatif/nol):
+
+try:
+    hero2.persentase_sukses = 150
+except ValueError as e:
+    print(f"[TERTANGKAP ERROR] {e}")
+
+try:
+    hero2.persentase_sukses = "Sangat Tinggi"
+except ValueError as e:
+    print(f"[TERTANGKAP ERROR] {e}")
+
+try:
+    operator1.total_dispatch = -5
+except ValueError as e:
+    print(f"[TERTANGKAP ERROR] {e}")
+
+try:
+    inc2.reputasi_reward = 0
+except ValueError as e:
+    print(f"[TERTANGKAP ERROR] {e}")
 --------------------------------------------------------------------------------------------------------------------------------------
 
 ## Persyaratan Sistem
