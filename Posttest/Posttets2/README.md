@@ -40,7 +40,7 @@ Program terdiri dari tiga kelas utama yang saling berinteraksi:
 
 Pengujian dilakukan langsung pada bagian *main code* dengan skenario sebagai berikut:
 
- 1. Pengujian Class `Hero`
+### 1. Pengujian Class `Hero`
 Menguji pembuatan objek hero, pemanggilan *instance method* (`tampilkan_stats`), *static method* (`validasi_tipehero`), dan *class method* (`ubah_maksimal_tim`):
 
 ```python
@@ -57,19 +57,22 @@ print(f"Tipe 'Intelligence' -> {Hero.validasi_tipehero('Intelligence')}")
 
 # Class Method
 Hero.ubah_maksimal_tim(4)
+```
 
- 2. Pengujian Class `Misi`
+ ### 2. Pengujian Class `Misi`
 Menguji pembuatan objek insiden/misi dan menampilkan detail informasinya (info_incident):
+```python
 inc1 = Misi("INC-01", "Penyelidikan Villain", "Downtown", ["Intelligence", "Mobility"], 150)
 inc2 = Misi("INC-02", "Kebakaran Gedung", "Sector 7", ["Power"], 80)
 
 # Instance Method
 inc1.info_incident()
 inc2.info_incident()
+```
 
- 3. Pengujian Class `Dispatcher`
+ ### 3. Pengujian Class `Dispatcher`
 Menguji verifikasi kode akses, eksekusi dispatch hero ke lokasi misi, serta mekanisme perubahan status kesiapan hero:
-
+```python
 operator1 = Dispatcher("Player 1", "Night Shift", "Meja Utama 01", "PASS-1234")
 
 # Verifikasi Kode Akses
@@ -81,16 +84,18 @@ operator1.dispatch_tim_hero([hero1, hero3], inc1)
 
 hero1.beristirahat()
 hero1.tampilkan_stats()
+```
 
- 4. Pengujian Setter dengan Data Valid
+ ### 4. Pengujian Setter dengan Data Valid
 Menguji pembaruan nilai pada atribut privat melalui @setter menggunakan data yang memenuhi syarat validasi:
-
+```python
 hero2.persentase_sukses = 98
 inc2.reputasi_reward = 120
+```
 
-5. Pengujian Setter dengan Data Tidak Valid (Exception Handling)
+### 5. Pengujian Setter dengan Data Tidak Valid (Exception Handling)
 Menguji ketahanan program menggunakan blok try-except saat diberi input yang melanggar aturan validasi (misal: nilai di luar batas rentang, tipe data salah, angka bernilai negatif/nol):
-
+```python
 try:
     hero2.persentase_sukses = 150
 except ValueError as e:
@@ -110,6 +115,7 @@ try:
     inc2.reputasi_reward = 0
 except ValueError as e:
     print(f"[TERTANGKAP ERROR] {e}")
+    ```
 --------------------------------------------------------------------------------------------------------------------------------------
 
 ## Persyaratan Sistem
