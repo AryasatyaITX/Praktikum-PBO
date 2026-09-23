@@ -1,4 +1,4 @@
-# Sistem Dispatching dan Manajemen Alokasi Hero
+# Sistem Dispatching dan Manajemen Alokasi Hero Pada Agensi Penugasan Pahlawan
 
 Program aplikasi konsol berbasis Python untuk mengelola dan memproses pengiriman (*dispatch*) superhero pada sebuah agensi penugasan pahlawan. Program ini menerapkan prinsip Pemrograman Berbasis Objek (OOP) seperti Enkapsulasi, Properties, serta penggunaan berbagai jenis Method.
 
