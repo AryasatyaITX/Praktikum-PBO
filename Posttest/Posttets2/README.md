@@ -117,7 +117,7 @@ except ValueError as e:
     print(f"[TERTANGKAP ERROR] {e}")
     ```
 --------------------------------------------------------------------------------------------------------------------------------------
-
+```
 ## Persyaratan Sistem
 
 Untuk menjalankan program ini, pastikan sistem Anda telah terinstal:
