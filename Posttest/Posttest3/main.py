@@ -2,7 +2,7 @@ import os
 from posttest3_2509106066 import (
     Hero, HeroCombat, HeroIntelligence, HeroMobility,
     Misi, Dispatcher, Agency,
-    SilentNotifier, PanggilanBersaing, PanggilanPeretasan, proses_panggilan,
+    SilentNotifier, Competingcalls, Hackcalls, proses_panggilan,
 )
 
 def lanjut():
@@ -67,8 +67,8 @@ if __name__ == "__main__":
     print("==========================================================")
     print("|                     UJI DUCK TYPING                    |")
     print("==========================================================")
-    proses_panggilan(PanggilanBersaing("Selamatkan bank", "Selamatkan sekolah"))
-    proses_panggilan(PanggilanPeretasan("sistem keamanan gedung"))
+    proses_panggilan(Competingcalls("Selamatkan bank", "Selamatkan sekolah"))
+    proses_panggilan(Hackcalls("sistem keamanan gedung"))
     print("-" * 50)
 
     lanjut()

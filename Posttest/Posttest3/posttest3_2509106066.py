@@ -22,18 +22,17 @@ class SilentNotifier(Notifier):
         self.riwayat.append(pesan)  # disimpan, tidak dicetak
 
 
-# DUCK TYPING: PanggilanBersaing dan PanggilanPeretasan tidak berhubungan
-# lewat pewarisan, tetapi sama-sama punya method tangani().
-class PanggilanBersaing:
+# DUCK TYPING: punya method tangani().
+class Competingcalls:
     def __init__(self, opsi_a, opsi_b):
         self.opsi_a = opsi_a
         self.opsi_b = opsi_b
 
     def tangani(self):
-        print(f"[BERSAING] Pilih satu: '{self.opsi_a}' atau '{self.opsi_b}'. Opsi lain hilang.")
+        print(f"[BERSAING] Pilih satu: '{self.opsi_a}' atau '{self.opsi_b}'.")
 
 
-class PanggilanPeretasan:
+class Hackcalls:
     def __init__(self, target):
         self.target = target
 
