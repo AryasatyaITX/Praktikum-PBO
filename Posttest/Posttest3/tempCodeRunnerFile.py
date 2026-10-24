@@ -1,5 +1,8 @@
 import os
-from posttest3_2509106066 import ( Hero, HeroCombat, HeroIntelligence, HeroMobility, Misi, Dispatcher, Agency, SilentNotifier)
+from posttest3_2509106066 import (
+    Hero, HeroCombat, HeroIntelligence, HeroMobility,
+    Misi, Dispatcher, Agency, SilentNotifier, 
+    PanggilanBersaing, PanggilanPeretasan, proses_panggilan,)
 
 def lanjut():
     input("Tekan Enter untuk melanjutkan...")
@@ -8,6 +11,7 @@ def lanjut():
 
 if __name__ == "__main__":
     os.system("cls" if os.name == "nt" else "clear")
+
     print("==========================================================")
     print("|                     DISPATCH HERO                      |")
     print("==========================================================")
@@ -46,17 +50,45 @@ if __name__ == "__main__":
     print("|                UJI ABSTRACT CLASS (ABC)                |")
     print("==========================================================")
     try:
-        dummy = Hero("Dummy", 1, 50)  
+        Bunny = Hero("Bunny", 1, 50)  
     except TypeError as e:
-        print("[Bukti ABC] Tidak bisa instansiasi Hero:", e)
+        print("Tidak bisa instansiasi Hero:", e)
 
     lanjut()
     print("==========================================================")
     print("|               UJI POLIMORFISME (Override)              |")
     print("==========================================================")
-    hero1.aksi_khusus()
-    hero2.aksi_khusus()
-    hero3.aksi_khusus()
+    for hero in [hero1, hero2, hero3]:   # satu loop, perilaku berbeda
+        hero.aksi_khusus()
+
+    print("-" * 50)
+    print("Uji Polimorfisme tampilkan_stats():")
+    for hero in [hero1, hero2, hero3]:
+        hero.tampilkan_stats()
+    print("-" * 50)
+
+    lanjut()
+    print("==========================================================")
+    print("|                     UJI DUCK TYPING                    |")
+    print("==========================================================")
+    daftar_panggilan = [
+        PanggilanBersaing("Selamatkan bank", "Selamatkan sekolah"),
+        PanggilanPeretasan("sistem keamanan gedung"),
+    ]
+    for panggilan in daftar_panggilan:   # satu loop, satu fungsi, dua kelas berbeda
+        proses_panggilan(panggilan)
+    print("-" * 50)
+
+    lanjut()
+    print("==========================================================")
+    print("|              UJI OPERATOR OVERLOADING                  |")
+    print("==========================================================")
+    print("__str__ -> lihat Uji Komposisi (print(log))")
+    print("__lt__  -> sorted() hero berdasarkan power_level:")
+    for hero in sorted([hero1, hero2, hero3]):
+        print(f"  {hero.nama}: {hero.power_level}")
+    print("Hero terkuat (max):", max([hero1, hero2, hero3]).nama)
+    print("-" * 50)
 
     lanjut()
     print("==========================================================")
@@ -71,6 +103,7 @@ if __name__ == "__main__":
     print("Misi 2:")
     inc2.info_misi()
     print(f"Batas waktu respon: {Misi.batas_waktu_respon_detik} detik")
+    print("-" * 50)
 
     lanjut()
     print("==========================================================")
@@ -89,6 +122,7 @@ if __name__ == "__main__":
     print("Verifikasi Kode Akses:")
     print(f"Kode PASS-1234: {operator1.verif_access('PASS-1234')}")
     print(f"Kode SALAH: {operator1.verif_access('SALAH')}")
+    print("-" * 50)
 
     lanjut()
     print("==========================================================")
@@ -100,12 +134,28 @@ if __name__ == "__main__":
     hero1.tampilkan_stats()
     hero3.tampilkan_stats()
     print(f"Total dispatch: {operator1.total_dispatch}")
+    print("-" * 50)
+
+    lanjut()
+    print("==========================================================")
+    print("|              UJI DIP (Dependency Injection)            |")
+    print("==========================================================")
+    print("Operator 1 memakai ConsoleNotifier (default), operator 2 memakai SilentNotifier.")
+    print("Kelas Dispatcher sama, notifier berbeda, tanpa mengubah Dispatcher.")
+    print("-" * 50)
+    print("Operator 2 dispatch misi INC-02:")
+    operator2.dispatch_tim_hero([hero2], inc2)
+    print("(Tidak ada output di atas karena SilentNotifier.) Riwayat pesan:")
+    for pesan in operator2.notifier.riwayat:
+        print("  >", pesan)
+    print("-" * 50)
 
     lanjut()
     print("==========================================================")
     print("|                      UJI KOMPOSISI                     |")
     print("==========================================================")
     operator1.tampilkan_log()
+    print("-" * 50)
 
     lanjut()
     print("==========================================================")
@@ -121,6 +171,7 @@ if __name__ == "__main__":
     print("Nama Agency:", agency.nama)
     print("Jumlah Hero:", len(agency.daftar_hero))
     print("Jumlah Dispatcher:", len(agency.daftar_dispatcher))
+    print("-" * 50)
 
     lanjut()
     print("==========================================================")
@@ -134,6 +185,7 @@ if __name__ == "__main__":
     print("-" * 50)
     print("Setelah pemulihan:")
     hero1.tampilkan_stats()
+    print("-" * 50)
 
     lanjut()
     print("==========================================================")
@@ -146,34 +198,36 @@ if __name__ == "__main__":
     print(f"Reward awal {inc2.nama_kejadian} : {inc2.reputasi_reward}")
     inc2.reputasi_reward = 120
     print(f"Reward baru {inc2.nama_kejadian} : {inc2.reputasi_reward}")
+    print("-" * 50)
 
     lanjut()
     print("==========================================================")
     print("|              Uji Data Setter Tidak Valid               |")
     print("==========================================================")
     try:
-        print("[Uji 1] Persentase sukses = 150\n")
+        print("\n[Uji 1] Persentase sukses = 150")
         hero2.persentase_sukses = 150
     except ValueError as e:
         print("[ERROR]", e)
 
     try:
-        print("[Uji 2] Persentase sukses = 'Sangat Tinggi'\n")
+        print("\n[Uji 2] Persentase sukses = 'Sangat Tinggi'")
         hero2.persentase_sukses = "Sangat Tinggi"
     except ValueError as e:
         print("[ERROR]", e)
 
     try:
-        print("[Uji 3] Total dispatch = -5\n")
+        print("\n[Uji 3] Total dispatch = -5")
         operator1.total_dispatch = -5
     except ValueError as e:
         print("[ERROR]", e)
 
     try:
-        print("[Uji 4] Reward = 0")
+        print("\n[Uji 4] Reward = 0")
         inc2.reputasi_reward = 0
     except ValueError as e:
         print("[ERROR]", e)
+    print("-" * 50)
 
     lanjut()
     print("==========================================================")

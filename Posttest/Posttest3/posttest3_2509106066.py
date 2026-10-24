@@ -1,18 +1,50 @@
 from abc import ABC, abstractmethod
-import os
 
-def lanjut():
-    input("Tekan Enter untuk melanjutkan...")
-    os.system("cls" if os.name == "nt" else "clear")
 
-# Duck typing + DIP
-class ConsoleNotifier:
+# DIP: Dispatcher bergantung pada abstraksi Notifier, bukan kelas konkret.
+# Objek notifier disuntikkan dari luar lewat constructor Dispatcher.
+class Notifier(ABC):
+    @abstractmethod
+    def kirim(self, pesan):
+        pass
+
+
+class ConsoleNotifier(Notifier):
     def kirim(self, pesan):
         print(pesan)
 
-class SilentNotifier:
+
+class SilentNotifier(Notifier):
+    def __init__(self):
+        self.riwayat = []
+
     def kirim(self, pesan):
-        pass
+        self.riwayat.append(pesan)  # disimpan, tidak dicetak
+
+
+# DUCK TYPING: PanggilanBersaing dan PanggilanPeretasan tidak berhubungan
+# lewat pewarisan, tetapi sama-sama punya method tangani().
+class PanggilanBersaing:
+    def __init__(self, opsi_a, opsi_b):
+        self.opsi_a = opsi_a
+        self.opsi_b = opsi_b
+
+    def tangani(self):
+        print(f"[BERSAING] Pilih satu: '{self.opsi_a}' atau '{self.opsi_b}'. Opsi lain hilang.")
+
+
+class PanggilanPeretasan:
+    def __init__(self, target):
+        self.target = target
+
+    def tangani(self):
+        print(f"[PERETASAN] Tidak ada hero dikirim, operator meretas {self.target}.")
+
+
+def proses_panggilan(panggilan):
+    # Satu fungsi untuk semua jenis panggilan: yang penting punya tangani()
+    panggilan.tangani()
+
 
 class Hero(ABC):
     total_hero = 0
@@ -55,8 +87,17 @@ class Hero(ABC):
     def tipe_hero(self):
         return getattr(self, "TIPE", "Unknown")
 
+    @property
+    def id_hero(self):
+        return self.__id_hero
+
     def info_dasar(self):
-        return (f"Hero: {self._nama} | Tipe: {self.tipe_hero} | "f"Power: {self.power_level} | SR: {self.persentase_sukses}% | Status: {self._status}")
+        return (f"[{self.__id_hero}] Hero: {self._nama} | Tipe: {self.tipe_hero} | "
+                f"Power: {self.power_level} | SR: {self.persentase_sukses}% | Status: {self._status}")
+
+    # OPERATOR OVERLOADING: bandingkan hero berdasarkan power_level
+    def __lt__(self, other):
+        return self.power_level < other.power_level
 
     @classmethod 
     def ubah_maksimal_tim(cls, jumlah): 
@@ -132,14 +173,14 @@ class DispatchLog:
         self.nama_misi = nama_misi
         self.sukses = sukses
         
-# menggunakan magic method _str_ dan overloadding
+# OPERATOR OVERLOADING: magic method __str__
     def __str__(self): 
         hasil = "SUKSES" if self.sukses else "GAGAL"
         return f"[LOG] {hasil} | Operator: {self.nama_operator} | Misi: {self.nama_misi}"
 
  
 class Dispatcher:
-    def __init__(self, nama_operator, kode_akses, notifier=None):
+    def __init__(self, nama_operator, kode_akses, notifier: Notifier = None):
         self.nama_operator = nama_operator
         self.__kode_akses = kode_akses  
         self.total_dispatch = 0         
@@ -166,23 +207,23 @@ class Dispatcher:
 
     # ASOSIASI
     def dispatch_tim_hero(self, tim_hero, misi):
-        print(f"[DISPATCH] {self.nama_operator} memproses '{misi.nama_kejadian}'...")
+        self.notifier.kirim(f"[DISPATCH] {self.nama_operator} memproses '{misi.nama_kejadian}'...")
 
         if len(tim_hero) < 1 or len(tim_hero) > Hero.maksimal_tim_dispatch:
-            print("[Gagal] Jumlah hero tidak sesuai!")
+            self.notifier.kirim("[Gagal] Jumlah hero tidak sesuai!")
             self.__logs.append(DispatchLog(self.nama_operator, misi.nama_kejadian, False))
             return
 
         for h in tim_hero:
             if h.status != "Standby":
-                print(f"[Gagal] {h.nama} tidak Standby (status: {h.status})")
+                self.notifier.kirim(f"[Gagal] {h.nama} tidak Standby (status: {h.status})")
                 self.__logs.append(DispatchLog(self.nama_operator, misi.nama_kejadian, False))
                 return
 
         tipe_tim = [h.tipe_hero for h in tim_hero]
         for syarat in misi.syarat_tipe:
             if syarat not in tipe_tim:
-                print(f"[MISI GAGAL] butuh {misi.syarat_tipe}, tim punya {tipe_tim}")
+                self.notifier.kirim(f"[MISI GAGAL] butuh {misi.syarat_tipe}, tim punya {tipe_tim}")
                 for h in tim_hero:
                     h.status = "Resting"
                 self.__logs.append(DispatchLog(self.nama_operator, misi.nama_kejadian, False))
@@ -191,7 +232,7 @@ class Dispatcher:
         self.total_dispatch += 1
         for h in tim_hero:
             h.status = "Resting"
-        print("[MISI SUKSES] Tim berhasil!")
+        self.notifier.kirim("[MISI SUKSES] Tim berhasil!")
         self.__logs.append(DispatchLog(self.nama_operator, misi.nama_kejadian, True))
 
     def tampilkan_log(self):
