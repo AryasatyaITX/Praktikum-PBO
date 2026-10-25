@@ -1,6 +1,6 @@
 # Sistem Dispatching dan Manajemen Alokasi Hero Pada Agensi Penugasan Pahlawan
 
-Program aplikasi konsol berbasis Python untuk mengelola dan memproses pengiriman (*dispatch*) superhero pada sebuah agensi penugasan pahlawan. Program ini menerapkan prinsip Pemrograman Berorientasi Objek (OOP) seperti Enkapsulasi, Properties, Inheritance, Relasi UML (Asosiasi, Agregasi, Komposisi), Abstraksi (Abstract Base Class), Polimorfisme, serta prinsip SOLID sebagai nilai plus.
+Program aplikasi konsol berbasis Python untuk mengelola dan memproses pengiriman (*dispatch*) superhero pada sebuah agensi penugasan pahlawan. Program ini menerapkan prinsip Pemrograman Berorientasi Objek (OOP) seperti Enkapsulasi, Properties, Inheritance, Relasi UML (Asosiasi, Agregasi, Komposisi), Abstraksi (Abstract Base Class), Polimorfisme, serta prinsip SOLID dan beberapa jenis method.
 
 ===============================================================================================================================================
 
@@ -232,7 +232,7 @@ Dua kelas panggilan yang masing-masing memiliki method `tangani()`, serta fungsi
 
 Diagram berikut menampilkan tiga relasi UML yang diwajibkan, yaitu **asosiasi**, **agregasi**, dan **komposisi**.
 
-![Class Diagram](UML.drawio.png)
+![Class Diagram](Images/UML.drawio.png)
 
 Keterangan simbol:
 - Garis putus-putus dengan panah (`..>`) menunjukkan asosiasi.
@@ -437,7 +437,7 @@ Abstract class kedua adalah `MissionEvaluator` (method abstrak `nilai()`), yang 
 
 ## Polimorfisme
 
-Polimorfisme berarti satu antarmuka dengan banyak implementasi: kode yang sama dapat bekerja dengan objek bertipe berbeda selama objek tersebut memiliki method yang diharapkan.
+Polimorfisme berarti satu interface dengan banyak implementasi: kode yang sama dapat bekerja dengan objek bertipe berbeda selama objek tersebut memiliki method yang diharapkan.
 
 ### 1. Polimorfisme via pewarisan (method overriding)
 
@@ -775,31 +775,31 @@ except ValueError as e:
 
 ### Bukti Abstract Class Tidak Dapat Diinstansiasi
 
-![Bukti Abstract Class](screenshots/abstract_class.png)
+![Bukti Abstract Class](Images/abstract_class.png)
 
 ### Polimorfisme (Override), Duck Typing, dan Operator Overloading
 
-![Polimorfisme](screenshots/polimorfisme.png)
+![Polimorfisme](Images/polimorfisme.png)
 
-![Duck Typing](screenshots/duck_typing.png)
+![Duck Typing](Images/duck_typing.png)
 
-![Operator Overloading](screenshots/operator_overloading.png)
+![Operator Overloading](Images/operator_overloading.png)
 
 ### Asosiasi, DIP, Komposisi, dan Agregasi
 
-![Asosiasi](screenshots/asosiasi.png)
+![Asosiasi](Images/asosiasi.png)
 
-![DIP](screenshots/dip.png)
+![DIP](Images/dip.png)
 
-![Komposisi](screenshots/komposisi.png)
+![Komposisi](Images/komposisi.png)
 
-![Agregasi](screenshots/agregasi.png)
+![Agregasi](Images/agregasi.png)
 
 ### Setter Valid dan Tidak Valid
 
-![Setter Valid](screenshots/setter_valid.png)
+![Setter Valid](Images/setter_valid.png)
 
-![Setter Tidak Valid](screenshots/setter_tidak_valid.png)
+![Setter Tidak Valid](Images/setter_tidak_valid.png)
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
