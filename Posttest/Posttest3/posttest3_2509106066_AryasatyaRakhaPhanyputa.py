@@ -1,50 +1,6 @@
 from abc import ABC, abstractmethod
 
-
-# DIP: Dispatcher bergantung pada abstraksi Notifier, bukan kelas konkret.
-# Objek notifier disuntikkan dari luar lewat constructor Dispatcher.
-class Notifier(ABC):
-    @abstractmethod
-    def kirim(self, pesan):
-        pass
-
-
-class ConsoleNotifier(Notifier):
-    def kirim(self, pesan):
-        print(pesan)
-
-
-class SilentNotifier(Notifier):
-    def __init__(self):
-        self.riwayat = []
-
-    def kirim(self, pesan):
-        self.riwayat.append(pesan)  # disimpan, tidak dicetak
-
-
-# DUCK TYPING: punya method tangani().
-class Competingcalls:
-    def __init__(self, opsi_a, opsi_b):
-        self.opsi_a = opsi_a
-        self.opsi_b = opsi_b
-
-    def tangani(self):
-        print(f"[BERSAING] Pilih satu: '{self.opsi_a}' atau '{self.opsi_b}'.")
-
-
-class Hackcalls:
-    def __init__(self, target):
-        self.target = target
-
-    def tangani(self):
-        print(f"[PERETASAN] Tidak ada hero dikirim, operator meretas {self.target}.")
-
-
-def proses_panggilan(panggilan):
-    # Satu fungsi untuk semua jenis panggilan: yang penting punya tangani()
-    panggilan.tangani()
-
-
+# ABSTRAKSI -> Abstract Base Class(ABC)
 class Hero(ABC):
     total_hero = 0
     nama_agency = "Phoenix Agency"
@@ -94,7 +50,7 @@ class Hero(ABC):
         return (f"[{self.__id_hero}] Hero: {self._nama} | Tipe: {self.tipe_hero} | "
                 f"Power: {self.power_level} | SR: {self.persentase_sukses}% | Status: {self._status}")
 
-    # OPERATOR OVERLOADING: bandingkan hero berdasarkan power_level
+    # OPERATOR OVERLOADING: membandingkan hero berdasarkan power level
     def __lt__(self, other):
         return self.power_level < other.power_level
 
@@ -166,6 +122,32 @@ class HeroMobility(Hero):
         print(f"{self.nama} bergerak cepat dengan speed level {self.speed_level}!")
  
 
+# DIP (Dependency Inversion Principle)
+# Dispatcher bergantung pada abstraksi MissionEvaluator, bukan pada kelas konkret.
+class MissionEvaluator(ABC):
+    @abstractmethod
+    def nilai(self, tim, misi):
+        pass
+
+class TypeEvaluator(MissionEvaluator):
+    def nilai(self, tim, misi):
+        tipe_tim = [hero.tipe_hero for hero in tim]
+        print(f"TypeEvaluator memeriksa tipe tim {tipe_tim} terhadap syarat misi {misi.syarat_tipe}")
+        return all(syarat in tipe_tim for syarat in misi.syarat_tipe)
+
+class SuccessRateEvaluator(MissionEvaluator):
+    def __init__(self, batas=90):
+        self.batas = batas
+
+    def nilai(self, tim, misi):
+        rata_rata = sum(hero.persentase_sukses for hero in tim) / len(tim)
+        # misi yang lebih sulit mendapatkan reward lebih besar tetapi menuntut persentase sukses lebih tinggi
+        dibutuhkan = min(100, self.batas + misi.reputasi_reward // 50)
+        print(f"SuccessRateEvaluator: rata-rata tim {rata_rata:.1f}%, dibutuhkan {dibutuhkan}%")
+        return rata_rata >= dibutuhkan
+
+
+# KOMPOSISI: DispatchLog dibuat dan dimiliki oleh Dispatcher (disimpan di __logs)
 class DispatchLog:
     def __init__(self, nama_operator, nama_misi, sukses):
         self.nama_operator = nama_operator
@@ -179,12 +161,12 @@ class DispatchLog:
 
  
 class Dispatcher:
-    def __init__(self, nama_operator, kode_akses, notifier: Notifier = None):
+    def __init__(self, nama_operator, kode_akses, penilai: MissionEvaluator = None):
         self.nama_operator = nama_operator
         self.__kode_akses = kode_akses  
         self.total_dispatch = 0         
-        self.__logs = []
-        self.notifier = notifier if notifier is not None else ConsoleNotifier()                
+        self.__logs = []  # KOMPOSISI: log dibuat & dimiliki Dispatcher
+        self.penilai = penilai if penilai is not None else TypeEvaluator()
 
     @property
     def total_dispatch(self):
@@ -206,32 +188,30 @@ class Dispatcher:
 
     # ASOSIASI
     def dispatch_tim_hero(self, tim_hero, misi):
-        self.notifier.kirim(f"[DISPATCH] {self.nama_operator} memproses '{misi.nama_kejadian}'...")
+        print(f"[DISPATCH] {self.nama_operator} memproses '{misi.nama_kejadian}'...")
 
         if len(tim_hero) < 1 or len(tim_hero) > Hero.maksimal_tim_dispatch:
-            self.notifier.kirim("[Gagal] Jumlah hero tidak sesuai!")
+            print("[Gagal] Jumlah hero tidak sesuai!")
             self.__logs.append(DispatchLog(self.nama_operator, misi.nama_kejadian, False))
             return
 
         for h in tim_hero:
             if h.status != "Standby":
-                self.notifier.kirim(f"[Gagal] {h.nama} tidak Standby (status: {h.status})")
+                print(f"[Gagal] {h.nama} tidak Standby (status: {h.status})")
                 self.__logs.append(DispatchLog(self.nama_operator, misi.nama_kejadian, False))
                 return
 
-        tipe_tim = [h.tipe_hero for h in tim_hero]
-        for syarat in misi.syarat_tipe:
-            if syarat not in tipe_tim:
-                self.notifier.kirim(f"[MISI GAGAL] butuh {misi.syarat_tipe}, tim punya {tipe_tim}")
-                for h in tim_hero:
-                    h.status = "Resting"
-                self.__logs.append(DispatchLog(self.nama_operator, misi.nama_kejadian, False))
-                return
+        if not self.penilai.nilai(tim_hero, misi):
+            print("[MISI GAGAL] Tim tidak memenuhi penilaian misi.")
+            for h in tim_hero:
+                h.status = "Resting"
+            self.__logs.append(DispatchLog(self.nama_operator, misi.nama_kejadian, False))
+            return
 
         self.total_dispatch += 1
         for h in tim_hero:
             h.status = "Resting"
-        self.notifier.kirim("[MISI SUKSES] Tim berhasil!")
+        print("[MISI SUKSES] Tim berhasil!")
         self.__logs.append(DispatchLog(self.nama_operator, misi.nama_kejadian, True))
 
     def tampilkan_log(self):
@@ -278,3 +258,25 @@ class Agency:
 
     def tambah_dispatcher(self, dispatcher):
         self.daftar_dispatcher.append(dispatcher)
+
+# DUCK TYPING: punya method tangani().
+class Competingcalls:
+    def __init__(self, opsi_a, opsi_b):
+        self.opsi_a = opsi_a
+        self.opsi_b = opsi_b
+
+    def tangani(self):
+        print(f"Pilih satu: '{self.opsi_a}' atau '{self.opsi_b}'.")
+
+
+class Hackcalls:
+    def __init__(self, target):
+        self.target = target
+
+    def tangani(self):
+        print(f"[HACKING] Tidak ada hero dikirim atau membantu hero, operator meretas {self.target}.")
+
+
+def proses_panggilan(panggilan):
+    # Satu fungsi untuk semua jenis panggilan: yang penting punya tangani()
+    panggilan.tangani()

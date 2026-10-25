@@ -1,14 +1,11 @@
 import os
-from posttest3_2509106066 import (
-    Hero, HeroCombat, HeroIntelligence, HeroMobility,
-    Misi, Dispatcher, Agency,
-    SilentNotifier, Competingcalls, Hackcalls, proses_panggilan,
-)
+from posttest3_2509106066_AryasatyaRakhaPhanyputa import (
+    Hero, HeroCombat, HeroIntelligence, HeroMobility, Misi, Dispatcher, Agency,
+    SuccessRateEvaluator, Competingcalls, Hackcalls, proses_panggilan,)
 
 def lanjut():
     input("Tekan Enter untuk melanjutkan...")
     os.system("cls" if os.name == "nt" else "clear")
-
 
 if __name__ == "__main__":
     os.system("cls" if os.name == "nt" else "clear")
@@ -51,9 +48,10 @@ if __name__ == "__main__":
     print("|                UJI ABSTRACT CLASS (ABC)                |")
     print("==========================================================")
     try:
-        dummy = Hero("Dummy", 1, 50)  
+        Bunny = Hero("Bunny", 1, 50)
     except TypeError as e:
-        print("[Bukti ABC] Tidak bisa instansiasi Hero:", e)
+        print("[Bukti ABSTRAKSI] Tidak bisa instansiasi Hero:", e)
+    print("-" * 50)
 
     lanjut()
     print("==========================================================")
@@ -69,7 +67,7 @@ if __name__ == "__main__":
     print("==========================================================")
     proses_panggilan(Competingcalls("Selamatkan bank", "Selamatkan sekolah"))
     proses_panggilan(Hackcalls("sistem keamanan gedung"))
-    print("-" * 50)
+    print("-" * 50)   
 
     lanjut()
     print("==========================================================")
@@ -100,7 +98,7 @@ if __name__ == "__main__":
     print("|                    DATA DISPATCHER                     |")
     print("==========================================================")
     operator1 = Dispatcher("Player 1", "PASS-1234")
-    operator2 = Dispatcher("Player 2", "PASS-5678", notifier=SilentNotifier())  # contoh DIP + duck typing
+    operator2 = Dispatcher("Player 2", "PASS-5678", penilai=SuccessRateEvaluator(90))  # contoh DIP (Dependency Inversion Principle)
 
     print("Info Operator 1:")
     operator1.info_operator()
@@ -130,14 +128,15 @@ if __name__ == "__main__":
     print("==========================================================")
     print("|              UJI DIP (Dependency Injection)            |")
     print("==========================================================")
-    print("Operator 1 memakai ConsoleNotifier (default), operator 2 memakai SilentNotifier.")
-    print("Kelas Dispatcher sama, notifier berbeda, tanpa mengubah Dispatcher.")
+    print("Misi INC-01 butuh Intelligence + Mobility. hero2 bertipe Combat (SR 95%).")
+    print("Kelas Dispatcher sama, evaluator berbeda, tanpa mengubah Dispatcher.")
     print("-" * 50)
-    print("Operator 2 dispatch misi INC-02:")
-    operator2.dispatch_tim_hero([hero2], inc2)
-    print("(Tidak ada output di atas karena SilentNotifier.) Riwayat pesan:")
-    print(operator2.notifier.riwayat)
+    print("Operator 1 (TypeEvaluator, default):")
+    operator1.dispatch_tim_hero([hero2], inc1)
+    hero2.beristirahat()
     print("-" * 50)
+    print("Operator 2 (SuccessRateEvaluator, batas 90%):")
+    operator2.dispatch_tim_hero([hero2], inc1)
 
     lanjut()
     print("==========================================================")
@@ -187,14 +186,13 @@ if __name__ == "__main__":
     print(f"Reward awal {inc2.nama_kejadian} : {inc2.reputasi_reward}")
     inc2.reputasi_reward = 120
     print(f"Reward baru {inc2.nama_kejadian} : {inc2.reputasi_reward}")
-    print("-" * 50)
 
     lanjut()
     print("==========================================================")
     print("|              Uji Data Setter Tidak Valid               |")
     print("==========================================================")
     try:
-        print("[Uji 1] Persentase sukses = 150")
+        print("\n[Uji 1] Persentase sukses = 150")
         hero2.persentase_sukses = 150
     except ValueError as e:
         print("[ERROR]", e)
@@ -216,7 +214,6 @@ if __name__ == "__main__":
         inc2.reputasi_reward = 0
     except ValueError as e:
         print("[ERROR]", e)
-
     print("-" * 50)
 
     lanjut()
