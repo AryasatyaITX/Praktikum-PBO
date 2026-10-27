@@ -1,6 +1,6 @@
 # Sistem Dispatching dan Manajemen Alokasi Hero Pada Agensi Penugasan Pahlawan
 
-Program aplikasi konsol berbasis Python untuk mengelola dan memproses pengiriman (*dispatch*) superhero pada sebuah agensi penugasan pahlawan. Program ini menerapkan prinsip Pemrograman Berorientasi Objek (OOP) seperti Enkapsulasi, Properties, Inheritance, Relasi UML (Asosiasi, Agregasi, Komposisi), Abstraksi (Abstract Base Class), Polimorfisme, serta prinsip SOLID dan beberapa jenis method.
+Program aplikasi konsol berbasis Python untuk mengelola dan memproses pengiriman (*dispatch*) superhero pada sebuah agensi penugasan pahlawan. Program ini menerapkan prinsip Pemrograman Berorientasi Objek (OOP) seperti Enkapsulasi, Properties, Inheritance, Relasi UML (Asosiasi, Agregasi, Komposisi), Abstraksi (Abstract Base Class), Polimorfisme, serta beberapa prinsip SOLID dan beberapa jenis method.
 
 ===============================================================================================================================================
 
