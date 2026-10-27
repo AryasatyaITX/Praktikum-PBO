@@ -60,7 +60,7 @@ class Hero(ABC):
             cls.maksimal_tim_dispatch = jumlah 
             print(f"[Berhasil] Maksimal tim dispatch diubah menjadi {jumlah} hero.") 
         else: 
-            print("[Gagal!] Maksimal tim harus lebih dari 0!.") 
+            print("[Gagal] Maksimal tim harus lebih dari 0!") 
  
     @staticmethod 
     def validasi_tipehero(tipe): 
@@ -82,9 +82,7 @@ class Hero(ABC):
     def aksi_khusus(self):
         pass
 
-# Inheritance dan LSP (Liskov Substitution Principle)
-# Semua subclass Hero menepati kontrak Hero (tampilkan_stats & aksi_khusus diimplementasikan penuh,
-# tidak ada method yang hanya melempar error), sehingga objek subclass bisa dipakai di mana pun Hero dipakai.
+# Inheritance: setiap subclass Hero mengimplementasikan seluruh abstract method (tampilkan_stats & aksi_khusus).
 class HeroCombat(Hero):
     TIPE = "Combat"
     def __init__(self, nama, power_level, persentase_sukses, senjata, status="Standby"):
@@ -123,7 +121,6 @@ class HeroMobility(Hero):
     def aksi_khusus(self):      # overriding
         print(f"{self.nama} bergerak cepat dengan speed level {self.speed_level}!")
 
-# OCP: HeroVigor ditambahkan sebagai subclass baru tanpa mengubah Hero maupun subclass lainnya.
 class HeroVigor(Hero):
     TIPE = "Vigor"
     def __init__(self, nama, power_level, persentase_sukses, stamina, status="Standby"):
@@ -143,16 +140,14 @@ class MissionEvaluator(ABC):
     def nilai(self, tim, misi):
         pass
 
-# OCP (Open/Closed Principle): aturan penilaian baru cukup ditambah sebagai subclass baru
-# dari MissionEvaluator, tanpa mengubah Dispatcher maupun penilai yang sudah ada.
-# penilaian konkret ditambahkan lewat kelas baru
+# penilai konkret: setiap aturan penilaian dibuat sebagai subclass MissionEvaluator
 class TypeEvaluator(MissionEvaluator):
     def nilai(self, tim, misi):
         tipe_tim = [hero.tipe_hero for hero in tim]
         print(f"TypeEvaluator memeriksa tipe tim {tipe_tim} terhadap syarat misi {misi.syarat_tipe}")
         return all(syarat in tipe_tim for syarat in misi.syarat_tipe)
 
-# penilaian baru, Class dan data pada Dispatcher tidak diubah.
+# penilai konkret kedua, berdasarkan rata-rata persentase sukses tim
 class SuccessRateEvaluator(MissionEvaluator):
     def __init__(self, batas=90):
         self.batas = batas
@@ -220,8 +215,8 @@ class Dispatcher:
                 self.__logs.append(DispatchLog(self.nama_operator, misi.nama_kejadian, False))
                 return
 
-        # OCP + LSP: Dispatcher hanya memanggil nilai(); penilai apa pun (TypeEvaluator,
-        # SuccessRateEvaluator, atau yang baru) bisa dipakai tanpa mengubah baris ini.
+        # DIP: Dispatcher hanya memanggil nilai() pada abstraksi MissionEvaluator,
+        # tanpa tahu penilai konkret yang dipakai.
         if not self.penilai.nilai(tim_hero, misi):
             print("[MISI GAGAL] Tim tidak memenuhi penilaian misi.")
             for h in tim_hero:

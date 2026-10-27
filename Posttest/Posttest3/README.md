@@ -1,6 +1,6 @@
 # Sistem Dispatching dan Manajemen Alokasi Hero Pada Agensi Penugasan Pahlawan
 
-Program aplikasi konsol berbasis Python untuk mengelola dan memproses pengiriman (*dispatch*) superhero pada sebuah agensi penugasan pahlawan. Program ini menerapkan prinsip Pemrograman Berorientasi Objek (OOP) seperti Enkapsulasi, Properties, Inheritance, Relasi UML (Asosiasi, Agregasi, Komposisi), Abstraksi (Abstract Base Class), Polimorfisme, serta beberapa prinsip SOLID dan beberapa jenis method.
+Program aplikasi konsol berbasis Python untuk mengelola dan memproses pengiriman (*dispatch*) superhero pada sebuah agensi penugasan pahlawan. Program ini menerapkan prinsip Pemrograman Berorientasi Objek (OOP) seperti Enkapsulasi, Properties, Inheritance, Relasi UML (Asosiasi, Agregasi, Komposisi), Abstraksi (Abstract Base Class), Polimorfisme, serta prinsip SOLID (DIP) dan beberapa jenis method.
 
 ===============================================================================================================================================
 
@@ -17,7 +17,7 @@ Program ini dibuat untuk mensimulasikan alur kerja operasional agensi hero. Sist
    - `HeroCombat`
    - `HeroIntelligence`
    - `HeroMobility`
-   - `HeroVigor` (subclass tambahan sebagai contoh OCP, ditambahkan tanpa mengubah `Hero`)
+   - `HeroVigor`
 
    Setiap subclass memiliki atribut unik yang membedakannya dari parent class maupun subclass lainnya.
 
@@ -99,7 +99,7 @@ Program terdiri dari dua file: `posttest3_2509106066_AryasatyaRakhaPhanyputa.py`
 | 2 | `HeroCombat` | Subclass | `Hero` | Hero tipe Combat |
 | 3 | `HeroIntelligence` | Subclass | `Hero` | Hero tipe Intelligence |
 | 4 | `HeroMobility` | Subclass | `Hero` | Hero tipe Mobility |
-| 5 | `HeroVigor` | Subclass | `Hero` | Hero tipe Vigor (contoh OCP) |
+| 5 | `HeroVigor` | Subclass | `Hero` | Hero tipe Vigor |
 | 6 | `MissionEvaluator` | Abstract class (`ABC`) | - | Abstraksi penilai misi (DIP) |
 | 7 | `TypeEvaluator` | Subclass | `MissionEvaluator` | Penilai berdasarkan kecocokan tipe hero |
 | 8 | `SuccessRateEvaluator` | Subclass | `MissionEvaluator` | Penilai berdasarkan rata-rata persentase sukses |
@@ -628,9 +628,9 @@ Contoh `__str__` pada log dispatch:
 
 ## Penerapan Prinsip SOLID
 
-Program menerapkan tiga prinsip SOLID. Ketiganya benar-benar ada di kode. Prinsip SRP dan ISP tidak diklaim karena tidak ada bagian kode yang dibuat khusus untuk keduanya.
+Program menerapkan satu prinsip SOLID, yaitu **DIP**, dan penerapannya benar-benar ada di kode. Prinsip lain tidak diklaim.
 
-### 1. DIP (Dependency Inversion Principle) — penerapan utama
+### DIP (Dependency Inversion Principle)
 
 Kelas tingkat tinggi `Dispatcher` bergantung pada abstraksi `MissionEvaluator`, bukan pada kelas penilai tertentu. Objek penilai dikirim dari luar lewat constructor (*dependency injection*):
 
@@ -667,23 +667,11 @@ SuccessRateEvaluator: rata-rata tim 95.0%, dibutuhkan 93%
 [MISI SUKSES] Tim berhasil!
 ```
 
-### 2. OCP (Open/Closed Principle)
-
-Cara menilai misi baru cukup ditambahkan dengan membuat subclass `MissionEvaluator` baru (misalnya penilai berdasarkan `power_level`), tanpa mengubah `Dispatcher`, `TypeEvaluator`, maupun `SuccessRateEvaluator`. Kode lama tetap tertutup untuk diubah, tetapi terbuka untuk ditambah. Tidak ada rantai `if/elif` yang perlu dipanjangkan setiap ada aturan penilaian baru.
-
-OCP juga terlihat pada hierarki hero: `HeroVigor` ditambahkan sebagai subclass baru tanpa mengubah `Hero` maupun subclass lain (`HeroCombat`, `HeroIntelligence`, `HeroMobility`).
-
-### 3. LSP (Liskov Substitution Principle)
-
-Semua subclass `Hero` (termasuk `HeroVigor`) dan semua subclass `MissionEvaluator` menepati kontrak parent-nya, tanpa method yang hanya melempar error. Karena itu `Dispatcher.dispatch_tim_hero()` menerima hero apa pun, dan `Dispatcher` memakai penilai apa pun tanpa perilaku aneh.
-
 ### Ringkasan
 
 | Prinsip | Penerapan di program |
 |---|---|
 | DIP | `Dispatcher` menerima `penilai: MissionEvaluator` dari luar lewat constructor, tidak membuat penilai konkret sendiri secara permanen |
-| OCP | Penilai baru cukup berupa subclass baru dari `MissionEvaluator`, dan `HeroVigor` ditambahkan sebagai subclass `Hero` baru, tanpa mengubah kode yang sudah ada |
-| LSP | `HeroCombat`, `HeroIntelligence`, `HeroMobility`, `HeroVigor`, `TypeEvaluator`, dan `SuccessRateEvaluator` dapat menggantikan parent-nya tanpa error |
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
