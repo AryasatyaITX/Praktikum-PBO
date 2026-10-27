@@ -50,7 +50,7 @@ class Hero(ABC):
         return (f"[{self.__id_hero}] Hero: {self._nama} | Tipe: {self.tipe_hero} | "
                 f"Power: {self.power_level} | SR: {self.persentase_sukses}% | Status: {self._status}")
 
-    # OPERATOR OVERLOADING: membandingkan hero berdasarkan power level
+    # Operator Overloading dengan magic method __lt__ : membandingkan hero berdasarkan power level
     def __lt__(self, other):
         return self.power_level < other.power_level
 
@@ -82,7 +82,7 @@ class Hero(ABC):
     def aksi_khusus(self):
         pass
 
-# Inheritance dan # LSP (Liskov Substitution Principle)
+# Inheritance dan LSP (Liskov Substitution Principle)
 # Semua subclass Hero menepati kontrak Hero (tampilkan_stats & aksi_khusus diimplementasikan penuh,
 # tidak ada method yang hanya melempar error), sehingga objek subclass bisa dipakai di mana pun Hero dipakai.
 class HeroCombat(Hero):
@@ -122,7 +122,19 @@ class HeroMobility(Hero):
 
     def aksi_khusus(self):      # overriding
         print(f"{self.nama} bergerak cepat dengan speed level {self.speed_level}!")
- 
+
+# OCP: HeroVigor ditambahkan sebagai subclass baru tanpa mengubah Hero maupun subclass lainnya.
+class HeroVigor(Hero):
+    TIPE = "Vigor"
+    def __init__(self, nama, power_level, persentase_sukses, stamina, status="Standby"):
+        super().__init__(nama, power_level, persentase_sukses, status)
+        self.stamina = stamina  
+
+    def tampilkan_stats(self):  # overriding
+        print(self.info_dasar() + f" | Stamina: {self.stamina}")
+
+    def aksi_khusus(self):      # overriding
+        print(f"{self.nama} mempunyai stamina sebesar {self.stamina}!")
 
 # DIP (Dependency Inversion Principle)
 # Dispatcher bergantung pada abstraksi MissionEvaluator, bukan pada kelas konkret.
@@ -133,7 +145,6 @@ class MissionEvaluator(ABC):
 
 # OCP (Open/Closed Principle): aturan penilaian baru cukup ditambah sebagai subclass baru
 # dari MissionEvaluator, tanpa mengubah Dispatcher maupun penilai yang sudah ada.
-
 # penilaian konkret ditambahkan lewat kelas baru
 class TypeEvaluator(MissionEvaluator):
     def nilai(self, tim, misi):
@@ -161,7 +172,7 @@ class DispatchLog:
         self.nama_misi = nama_misi
         self.sukses = sukses
         
-# OPERATOR OVERLOADING: magic method __str__
+# Operator Overloading: magic method __str__
     def __str__(self): 
         hasil = "SUKSES" if self.sukses else "GAGAL"
         return f"[LOG] {hasil} | Operator: {self.nama_operator} | Misi: {self.nama_misi}"
@@ -172,7 +183,8 @@ class Dispatcher:
         self.nama_operator = nama_operator
         self.__kode_akses = kode_akses  
         self.total_dispatch = 0         
-        self.__logs = []  # KOMPOSISI: log dibuat & dimiliki Dispatcher
+        self.__logs = []  # KOMPOSISI: log dibuat dan dimiliki Dispatcher
+        # DIP: penilai disuntikkan lewat constructor (dependency injection); TypeEvaluator hanya fallback jika tidak diberikan
         self.penilai = penilai if penilai is not None else TypeEvaluator()
 
     @property
@@ -208,6 +220,8 @@ class Dispatcher:
                 self.__logs.append(DispatchLog(self.nama_operator, misi.nama_kejadian, False))
                 return
 
+        # OCP + LSP: Dispatcher hanya memanggil nilai(); penilai apa pun (TypeEvaluator,
+        # SuccessRateEvaluator, atau yang baru) bisa dipakai tanpa mengubah baris ini.
         if not self.penilai.nilai(tim_hero, misi):
             print("[MISI GAGAL] Tim tidak memenuhi penilaian misi.")
             for h in tim_hero:
@@ -285,5 +299,5 @@ class Hackcalls:
 
 
 def proses_panggilan(panggilan):
-    # Satu fungsi untuk semua jenis panggilan: yang penting punya tangani()
+    # Satu fungsi untuk semua jenis panggilan: yang penting mempunyai method tangani()
     panggilan.tangani()

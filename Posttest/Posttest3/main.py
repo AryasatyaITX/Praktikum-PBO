@@ -1,6 +1,6 @@
 import os
 from posttest3_2509106066_AryasatyaRakhaPhanyputa import (
-    Hero, HeroCombat, HeroIntelligence, HeroMobility, Misi, Dispatcher, Agency,
+    Hero, HeroCombat, HeroIntelligence, HeroMobility, HeroVigor, Misi, Dispatcher, Agency,
     SuccessRateEvaluator, Competingcalls, Hackcalls, proses_panggilan,)
 
 def lanjut():
@@ -21,11 +21,13 @@ if __name__ == "__main__":
     hero1 = HeroIntelligence("Invisigal", 85, 90, "Smart Glasses")
     hero2 = HeroCombat("Blonde Blazer", 90, 95, "Necklace Power")
     hero3 = HeroMobility("Coupe", 75, 85, 10)
+    hero4 = HeroVigor("Golem", 90, 60, 98)
 
     print("Data Hero:")
     hero1.tampilkan_stats()
     hero2.tampilkan_stats()
     hero3.tampilkan_stats()
+    hero4.tampilkan_stats()
     print("-" * 50)
     print("Total Hero:", Hero.total_hero)
     print("Nama Agency:", Hero.nama_agency)
@@ -59,13 +61,14 @@ if __name__ == "__main__":
     print("==========================================================")
     for hero in [hero1, hero2, hero3]:   # satu loop, perilaku berbeda
         hero.aksi_khusus()
+    hero4.aksi_khusus()
     print("-" * 50)
 
     lanjut()
     print("==========================================================")
     print("|                     UJI DUCK TYPING                    |")
     print("==========================================================")
-    proses_panggilan(Competingcalls("Selamatkan bank", "Selamatkan sekolah"))
+    proses_panggilan(Competingcalls("Selamatkan bank", "Selamatkan sekolah. Jika tidak memilih maka opsi tersebut akan menghilang!"))
     proses_panggilan(Hackcalls("sistem keamanan gedung"))
     print("-" * 50)   
 
@@ -73,8 +76,9 @@ if __name__ == "__main__":
     print("==========================================================")
     print("|              UJI OPERATOR OVERLOADING                  |")
     print("==========================================================")
-    print("__str__ -> lihat Uji Komposisi (print(log))")
-    print(f"__lt__ : {hero1.nama} < {hero2.nama} ? {hero1 < hero2}")
+    # uji __lt__
+    print(f"{hero1.nama} ({hero1.power_level}) < {hero2.nama} ({hero2.power_level}) ? {hero1 < hero2}") 
+    print(f"{hero2.nama} ({hero2.power_level}) < {hero3.nama} ({hero3.power_level}) ? {hero2 < hero3}")
     print("Hero terkuat (max):", max(hero1, hero2, hero3).nama)
     print("-" * 50)
 
@@ -129,7 +133,6 @@ if __name__ == "__main__":
     print("|              UJI DIP (Dependency Injection)            |")
     print("==========================================================")
     print("Misi INC-01 butuh Intelligence + Mobility. hero2 bertipe Combat (SR 95%).")
-    print("Kelas Dispatcher sama, evaluator berbeda, tanpa mengubah Dispatcher.")
     print("-" * 50)
     print("Operator 1 (TypeEvaluator, default):")
     operator1.dispatch_tim_hero([hero2], inc1)
@@ -142,7 +145,7 @@ if __name__ == "__main__":
     print("==========================================================")
     print("|                      UJI KOMPOSISI                     |")
     print("==========================================================")
-    operator1.tampilkan_log()
+    operator1.tampilkan_log() 
     print("-" * 50)
 
     lanjut()
@@ -153,6 +156,7 @@ if __name__ == "__main__":
     agency.tambah_hero(hero1)
     agency.tambah_hero(hero2)
     agency.tambah_hero(hero3)
+    agency.tambah_hero(hero4)
     agency.tambah_dispatcher(operator1)
     agency.tambah_dispatcher(operator2)
 
