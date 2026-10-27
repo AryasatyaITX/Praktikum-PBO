@@ -87,13 +87,13 @@ Program menjalankan simulasi otomatis yang mencakup fitur-fitur berikut:
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Struktur Kode & Kelas
+## Struktur Code & Class
 
-Program terdiri dari dua file: `posttest3_2509106066_AryasatyaRakhaPhanyputa.py` (definisi kelas) dan `main.py` (pengujian). Berikut ringkasan struktur kelas dan kode dalam bentuk tabel.
+Program terdiri dari dua file: `posttest3_2509106066_AryasatyaRakhaPhanyputa.py` (definisi kelas) dan `main.py` (pengujian). Setiap kelas dijelaskan dengan pola tabel yang sama: atribut kelas, atribut instance, property, dan method.
 
 ### Ringkasan Seluruh Kelas
 
-| No | Kelas / Fungsi | Jenis | Induk | Peran |
+| No | Class  | Jenis | Induk | Peran |
 |---|---|---|---|---|
 | 1 | `Hero` | Abstract class (`ABC`) | - | Superclass seluruh hero |
 | 2 | `HeroCombat` | Subclass | `Hero` | Hero tipe Combat |
@@ -110,118 +110,215 @@ Program terdiri dari dua file: `posttest3_2509106066_AryasatyaRakhaPhanyputa.py`
 | 13 | `Competingcalls`, `Hackcalls` | Class biasa | - | Contoh duck typing |
 | 14 | `proses_panggilan()` | Fungsi | - | Memanggil `tangani()` pada objek apa pun |
 
-### 1. `Hero` (abstract class)
+### 1. Class `Hero` (Abstract Base Class)
 
-Class `Hero(ABC)` adalah superclass sekaligus abstract class untuk seluruh jenis hero. Class ini tidak dapat diinstansiasi langsung.
+Superclass abstrak untuk semua hero. Objeknya tidak bisa dibuat langsung, hanya lewat subclass.
 
-| Komponen | Nama | Keterangan |
+**Atribut kelas**
+
+| Atribut | Nilai awal | Fungsi |
 |---|---|---|
-| Atribut class | `total_hero` | Penghitung jumlah hero yang dibuat |
-| Atribut class | `nama_agency` | Nama agensi (`"Phoenix Agency"`) |
-| Atribut class | `maksimal_tim_dispatch` | Batas jumlah hero dalam satu tim (default 3) |
-| Atribut protected | `_nama` | Nama hero |
-| Atribut protected | `_status` | Status hero (`Standby` / `Resting`) |
-| Atribut public | `power_level` | Tingkat kekuatan hero |
-| Atribut private | `__persentase_sukses` | Persentase sukses, divalidasi lewat setter |
-| Atribut private | `__id_hero` | ID hero otomatis dari `total_hero` |
-| Property (getter) | `nama` | Read-only |
-| Property (getter + setter) | `status` | Dapat dibaca dan diubah |
-| Property (getter + setter) | `persentase_sukses` | Setter memvalidasi angka dan rentang 0 - 100 |
-| Property (getter) | `tipe_hero` | Mengambil konstanta `TIPE` milik subclass |
-| Property (getter) | `id_hero` | Read-only |
-| Method konkret | `info_dasar()` | Dipakai bersama oleh semua subclass |
-| Method konkret | `beristirahat()` | Mengubah status `Resting` menjadi `Standby` |
-| Class method | `ubah_maksimal_tim()` | Mengubah `maksimal_tim_dispatch` |
-| Static method | `validasi_tipehero()` | Mengecek tipe hero valid atau tidak |
-| Abstract method | `tampilkan_stats()` | Wajib dioverride subclass |
-| Abstract method | `aksi_khusus()` | Wajib dioverride subclass |
-| Magic method | `__lt__()` | Operator overloading, membandingkan `power_level` |
+| `total_hero` | `0` | Penghitung jumlah hero yang dibuat, juga dipakai sebagai ID hero |
+| `nama_agency` | `"Phoenix Agency"` | Nama agensi |
+| `maksimal_tim_dispatch` | `3` | Batas jumlah hero dalam satu tim dispatch |
+
+**Atribut instance**
+
+| Atribut | Akses | Keterangan |
+|---|---|---|
+| `_nama` | Protected | Diakses lewat property `nama`, boleh dipakai subclass |
+| `_status` | Protected | Diakses lewat property `status`, bernilai `Standby` atau `Resting` |
+| `power_level` | Public | Tingkat kekuatan hero, dipakai oleh `__lt__` |
+| `__persentase_sukses` | Private | Diakses lewat property `persentase_sukses` |
+| `__id_hero` | Private | Diakses lewat property `id_hero` |
+
+**Property**
+
+| Property | Jenis | Validasi di setter |
+|---|---|---|
+| `nama` | Getter saja | - (read-only) |
+| `status` | Getter dan setter | Tanpa validasi, dipakai `Dispatcher` untuk mengubah status |
+| `persentase_sukses` | Getter dan setter | Harus angka (`int` atau `float`) dan berada di rentang 0 - 100 |
+| `tipe_hero` | Getter saja | - (membaca konstanta `TIPE` milik subclass) |
+| `id_hero` | Getter saja | - (read-only) |
+
+**Method**
+
+| Method | Jenis | Fungsi |
+|---|---|---|
+| `info_dasar()` | Method konkret | Menyusun teks data dasar hero, dipakai bersama oleh semua subclass |
+| `beristirahat()` | Method konkret | Mengubah status `Resting` menjadi `Standby` |
+| `ubah_maksimal_tim()` | Class method | Mengubah `maksimal_tim_dispatch` (harus lebih dari 0) |
+| `validasi_tipehero()` | Static method | Mengecek apakah tipe hero termasuk tipe yang valid |
+| `tampilkan_stats()` | Abstract method 1 | Menampilkan data hero, ditentukan tiap subclass |
+| `aksi_khusus()` | Abstract method 2 | Aksi khusus hero, ditentukan tiap subclass |
+| `__lt__()` | Magic method | Operator overloading, membandingkan hero berdasarkan `power_level` |
 
 ### 2. Subclass `Hero`
 
-Seluruh subclass memanggil `super().__init__(...)`, memiliki konstanta `TIPE`, dan mengoverride `tampilkan_stats()` serta `aksi_khusus()`.
+Empat subclass yang masing-masing menambah satu atribut unik. Semuanya memanggil `super().__init__(...)`, memiliki konstanta `TIPE`, dan mengimplementasikan seluruh abstract method.
 
-| Subclass | Tipe Hero (`TIPE`) | Atribut unik | Method yang dioverride |
+**Atribut tambahan**
+
+| Subclass | Konstanta `TIPE` | Atribut unik | Akses |
 |---|---|---|---|
-| `HeroCombat` | `Combat` | `senjata` | `tampilkan_stats()`, `aksi_khusus()` |
-| `HeroIntelligence` | `Intelligence` | `gadget` | `tampilkan_stats()`, `aksi_khusus()` |
-| `HeroMobility` | `Mobility` | `speed_level` | `tampilkan_stats()`, `aksi_khusus()` |
-| `HeroVigor` | `Vigor` | `stamina` | `tampilkan_stats()`, `aksi_khusus()` |
+| `HeroCombat` | `"Combat"` | `senjata` | Public |
+| `HeroIntelligence` | `"Intelligence"` | `gadget` | Public |
+| `HeroMobility` | `"Mobility"` | `speed_level` | Public |
+| `HeroVigor` | `"Vigor"` | `stamina` | Public |
 
-### 3. `MissionEvaluator`, `TypeEvaluator`, dan `SuccessRateEvaluator`
+**Method yang dioverride**
 
-`MissionEvaluator(ABC)` adalah abstraksi penilai misi dengan satu abstract method `nilai(tim, misi)`.
-
-| Kelas | Jenis | Atribut | Method | Aturan penilaian |
-|---|---|---|---|---|
-| `MissionEvaluator` | Abstract class | - | `nilai(tim, misi)` (abstract) | Kontrak untuk semua penilai |
-| `TypeEvaluator` | Subclass | - | `nilai(tim, misi)` | Tim lolos jika memiliki setiap tipe hero yang disyaratkan misi |
-| `SuccessRateEvaluator` | Subclass | `batas` (default 90) | `nilai(tim, misi)` | Tim lolos jika rata-rata persentase sukses mencapai batas. Batas dinaikkan untuk misi dengan reward lebih besar (`batas + reward // 50`, maksimal 100) |
-
-### 4. `Dispatcher`
-
-Class untuk operator yang mengelola proses dispatch.
-
-| Komponen | Nama | Keterangan |
+| Subclass | `tampilkan_stats()` | `aksi_khusus()` |
 |---|---|---|
-| Atribut public | `nama_operator` | Nama operator |
-| Atribut private | `__kode_akses` | Kode akses operator |
-| Atribut private | `__total_dispatch` | Jumlah dispatch sukses, diakses lewat property |
-| Atribut private | `__logs` | Daftar `DispatchLog` (komposisi) |
-| Atribut public | `penilai` | Objek `MissionEvaluator` (default `TypeEvaluator`) |
-| Property (getter + setter) | `total_dispatch` | Setter menolak nilai negatif |
-| Method | `verif_access()` | Memverifikasi kode akses |
-| Method | `info_operator()` | Menampilkan info operator (kode akses disembunyikan) |
-| Method | `dispatch_tim_hero()` | Memproses pengiriman tim hero ke misi |
-| Method | `tampilkan_log()` | Menampilkan seluruh log milik operator |
+| `HeroCombat` | Data dasar + `senjata` | Menyerang menggunakan `senjata` |
+| `HeroIntelligence` | Data dasar + `gadget` | Menganalisis situasi dengan `gadget` |
+| `HeroMobility` | Data dasar + `speed_level` | Bergerak cepat sesuai `speed_level` |
+| `HeroVigor` | Data dasar + `stamina` | Menampilkan besar `stamina` |
 
-### 5. `DispatchLog`
+### 3. Class `MissionEvaluator` (Abstract Base Class) beserta Subclass
 
-Class untuk mencatat hasil dispatch.
+Abstraksi penilai misi. `Dispatcher` bergantung pada kelas ini, bukan pada penilai konkret (DIP).
 
-| Komponen | Nama | Keterangan |
-|---|---|---|
-| Atribut | `nama_operator` | Operator yang memproses |
-| Atribut | `nama_misi` | Misi yang diproses |
-| Atribut | `sukses` | `True` jika misi sukses |
-| Magic method | `__str__()` | Operator overloading untuk tampilan log |
+**Method**
 
-### 6. `Misi`
-
-Class untuk menyimpan data misi.
-
-| Komponen | Nama | Keterangan |
-|---|---|---|
-| Atribut class | `batas_waktu_respon_detik` | Bernilai 60 detik |
-| Atribut instance | `id_misi` | ID misi |
-| Atribut instance | `nama_kejadian` | Nama kejadian |
-| Atribut instance | `lokasi` | Lokasi kejadian |
-| Atribut instance | `syarat_tipe` | Daftar tipe hero yang dibutuhkan |
-| Atribut private | `__reputasi_reward` | Reward misi |
-| Property (getter + setter) | `reputasi_reward` | Setter menolak nilai kurang dari atau sama dengan 0 |
-| Method | `info_misi()` | Menampilkan detail misi |
-
-### 7. `Agency`
-
-Class untuk menampung daftar hero dan dispatcher.
-
-| Komponen | Nama | Keterangan |
-|---|---|---|
-| Atribut | `nama` | Nama agensi |
-| Atribut | `daftar_hero` | List objek `Hero` |
-| Atribut | `daftar_dispatcher` | List objek `Dispatcher` |
-| Method | `tambah_hero()` | Menambah hero ke agensi |
-| Method | `tambah_dispatcher()` | Menambah dispatcher ke agensi |
-
-### 8. `Competingcalls`, `Hackcalls`, dan `proses_panggilan()`
-
-Dua kelas panggilan yang masing-masing memiliki method `tangani()`, serta fungsi `proses_panggilan()` yang memanggil `tangani()` pada objek apa pun.
-
-| Nama | Jenis | Atribut | Method / Perilaku |
+| Kelas | Jenis | Method | Fungsi |
 |---|---|---|---|
-| `Competingcalls` | Class | `opsi_a`, `opsi_b` | `tangani()` meminta pemain memilih salah satu opsi |
-| `Hackcalls` | Class | `target` | `tangani()` meretas target tanpa mengirim hero |
-| `proses_panggilan()` | Fungsi | - | Memanggil `panggilan.tangani()` pada objek apa pun |
+| `MissionEvaluator` | Abstract class | `nilai(tim, misi)` (abstract) | Kontrak untuk semua penilai |
+| `TypeEvaluator` | Subclass | `nilai(tim, misi)` | Tim lolos jika memiliki setiap tipe hero yang disyaratkan misi |
+| `SuccessRateEvaluator` | Subclass | `nilai(tim, misi)` | Tim lolos jika rata-rata persentase sukses mencapai batas |
+
+**Atribut `SuccessRateEvaluator`**
+
+| Atribut | Akses | Keterangan |
+|---|---|---|
+| `batas` | Public | Batas dasar persentase sukses (default `90`). Batas yang dibutuhkan = `batas + reputasi_reward // 50`, maksimal 100 |
+
+### 4. Class `Dispatcher`
+
+Operator yang mengirim tim hero ke misi dan menyimpan log hasilnya.
+
+**Atribut instance**
+
+| Atribut | Akses | Keterangan |
+|---|---|---|
+| `nama_operator` | Public | Nama operator |
+| `__kode_akses` | Private | Hanya bisa dicek lewat `verif_access()` |
+| `__total_dispatch` | Private | Diakses lewat property `total_dispatch` |
+| `__logs` | Private | Daftar `DispatchLog` milik dispatcher (komposisi) |
+| `penilai` | Public | Objek `MissionEvaluator`, default `TypeEvaluator` (DIP) |
+
+**Property**
+
+| Property | Validasi di setter |
+|---|---|
+| `total_dispatch` | Tidak boleh negatif |
+
+**Method**
+
+| Method | Jenis | Fungsi |
+|---|---|---|
+| `verif_access()` | Method biasa | Membandingkan input dengan kode akses |
+| `info_operator()` | Method biasa | Menampilkan info operator, kode akses ditampilkan sebagai `[PRIVATE]` |
+| `dispatch_tim_hero()` | Method biasa (asosiasi) | Memproses pengiriman tim hero ke sebuah misi |
+| `tampilkan_log()` | Method biasa | Mencetak seluruh log milik operator memakai `__str__` |
+
+**Alur `dispatch_tim_hero()`**
+
+| Langkah | Pemeriksaan | Jika tidak terpenuhi |
+|---|---|---|
+| 1 | Jumlah hero antara 1 dan `maksimal_tim_dispatch` | Gagal, dicatat di log |
+| 2 | Semua hero berstatus `Standby` | Gagal, dicatat di log |
+| 3 | `penilai.nilai(tim_hero, misi)` bernilai `True` | Misi gagal, hero menjadi `Resting`, dicatat di log |
+| 4 | Semua syarat terpenuhi | `total_dispatch` bertambah, hero menjadi `Resting`, log sukses dicatat |
+
+### 5. Class `DispatchLog`
+
+Pencatat hasil dispatch. Dibuat dan dimiliki oleh `Dispatcher`.
+
+**Atribut instance**
+
+| Atribut | Akses | Keterangan |
+|---|---|---|
+| `nama_operator` | Public | Operator yang memproses |
+| `nama_misi` | Public | Misi yang diproses |
+| `sukses` | Public | `True` jika misi sukses |
+
+**Method**
+
+| Method | Jenis | Fungsi |
+|---|---|---|
+| `__str__()` | Magic method | Operator overloading, menentukan tampilan log saat di-`print()` |
+
+### 6. Class `Misi`
+
+Menyimpan data misi.
+
+**Atribut kelas**
+
+| Atribut | Nilai awal | Fungsi |
+|---|---|---|
+| `batas_waktu_respon_detik` | `60` | Batas waktu respon misi dalam detik |
+
+**Atribut instance**
+
+| Atribut | Akses | Keterangan |
+|---|---|---|
+| `id_misi` | Public | ID misi |
+| `nama_kejadian` | Public | Nama kejadian |
+| `lokasi` | Public | Lokasi kejadian |
+| `syarat_tipe` | Public | Daftar tipe hero yang dibutuhkan |
+| `__reputasi_reward` | Private | Diakses lewat property `reputasi_reward` |
+
+**Property**
+
+| Property | Validasi di setter |
+|---|---|
+| `reputasi_reward` | Harus lebih dari 0 |
+
+**Method**
+
+| Method | Jenis | Fungsi |
+|---|---|---|
+| `info_misi()` | Method biasa | Menampilkan detail misi |
+
+### 7. Class `Agency`
+
+Menampung hero dan dispatcher yang dibuat di luar (agregasi).
+
+**Atribut instance**
+
+| Atribut | Akses | Keterangan |
+|---|---|---|
+| `nama` | Public | Nama agensi |
+| `daftar_hero` | Public | List objek `Hero` |
+| `daftar_dispatcher` | Public | List objek `Dispatcher` |
+
+**Method**
+
+| Method | Jenis | Fungsi |
+|---|---|---|
+| `tambah_hero()` | Method biasa | Menambahkan hero ke agensi |
+| `tambah_dispatcher()` | Method biasa | Menambahkan dispatcher ke agensi |
+
+### 8. Class `Competingcalls`, `Hackcalls`, dan Fungsi `proses_panggilan()`
+
+Dua kelas yang tidak berhubungan lewat pewarisan, tetapi sama-sama memiliki method `tangani()` (duck typing).
+
+**Atribut instance**
+
+| Kelas | Atribut | Keterangan |
+|---|---|---|
+| `Competingcalls` | `opsi_a`, `opsi_b` | Dua pilihan yang harus dipilih salah satu |
+| `Hackcalls` | `target` | Target yang diretas operator |
+
+**Method dan fungsi**
+
+| Nama | Jenis | Fungsi |
+|---|---|---|
+| `Competingcalls.tangani()` | Method biasa | Meminta pemain memilih salah satu opsi |
+| `Hackcalls.tangani()` | Method biasa | Meretas target tanpa mengirim hero |
+| `proses_panggilan()` | Fungsi | Memanggil `panggilan.tangani()` pada objek apa pun |
 
 ### 9. Struktur `main.py`
 
