@@ -60,7 +60,7 @@ class Hero(ABC):
             cls.maksimal_tim_dispatch = jumlah 
             print(f"[Berhasil] Maksimal tim dispatch diubah menjadi {jumlah} hero.") 
         else: 
-            print("Gagal Maksimal tim harus lebih dari 0!.") 
+            print("[Gagal!] Maksimal tim harus lebih dari 0!.") 
  
     @staticmethod 
     def validasi_tipehero(tipe): 

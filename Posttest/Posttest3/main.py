@@ -59,9 +59,8 @@ if __name__ == "__main__":
     print("==========================================================")
     print("|               UJI POLIMORFISME (Override)              |")
     print("==========================================================")
-    for hero in [hero1, hero2, hero3]:   # satu loop, perilaku berbeda
+    for hero in [hero1, hero2, hero3, hero4]:   # satu loop, perilaku berbeda
         hero.aksi_khusus()
-    hero4.aksi_khusus()
     print("-" * 50)
 
     lanjut()

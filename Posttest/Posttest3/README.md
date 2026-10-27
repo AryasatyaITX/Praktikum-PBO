@@ -557,10 +557,10 @@ Polimorfisme berarti satu interface dengan banyak implementasi: kode yang sama d
 
 ### 1. Polimorfisme via pewarisan (method overriding)
 
-Method `aksi_khusus()` dan `tampilkan_stats()` di-override oleh `HeroCombat`, `HeroIntelligence`, dan `HeroMobility` dengan perilaku berbeda. Pemanggilannya lewat satu loop yang berisi objek dari subclass berbeda:
+Method `aksi_khusus()` dan `tampilkan_stats()` di-override oleh `HeroCombat`, `HeroIntelligence`, `HeroMobility`, dan `HeroVigor` dengan perilaku berbeda. Pemanggilannya lewat satu loop yang berisi objek dari subclass berbeda:
 
 ```python
-for hero in [hero1, hero2, hero3]:
+for hero in [hero1, hero2, hero3, hero4]:
     hero.aksi_khusus()
 ```
 
@@ -570,15 +570,6 @@ Output:
 Invisigal menganalisis situasi dengan gadget Smart Glasses!
 Blonde Blazer menyerang menggunakan Necklace Power!
 Coupe bergerak cepat dengan speed level 10!
-```
-
-`hero4` (`HeroVigor`) dipanggil dengan cara yang sama dan ikut menunjukkan polimorfisme:
-
-```python
-hero4.aksi_khusus()
-```
-
-```text
 Golem mempunyai stamina sebesar 98!
 ```
 
@@ -621,18 +612,9 @@ print("Hero terkuat (max):", max(hero1, hero2, hero3).nama)
 Output:
 
 ```text
-__lt__ : Invisigal < Blonde Blazer ? True
-Hero terkuat (max): Blonde Blazer
-```
-
-Perbandingan lain di `main.py` memakai `__lt__` pada hero dari subclass berbeda:
-
-```python
-print(f"{hero2.nama} ({hero2.power_level}) < {hero3.nama} ({hero3.power_level}) ? {hero2 < hero3}")
-```
-
-```text
+Invisigal (85) < Blonde Blazer (90) ? True
 Blonde Blazer (90) < Coupe (75) ? False
+Hero terkuat (max): Blonde Blazer
 ```
 
 Contoh `__str__` pada log dispatch:
@@ -758,9 +740,8 @@ except TypeError as e:
 Setiap subclass memanggil `aksi_khusus()` lewat satu loop, tetapi output yang ditampilkan berbeda.
 
 ```python
-for hero in [hero1, hero2, hero3]:
+for hero in [hero1, hero2, hero3, hero4]:
     hero.aksi_khusus()
-hero4.aksi_khusus()
 ```
 
 ### 5. Pengujian Duck Typing
@@ -773,7 +754,8 @@ proses_panggilan(Hackcalls("sistem keamanan gedung"))
 ### 6. Pengujian Operator Overloading
 
 ```python
-print(f"__lt__ : {hero1.nama} < {hero2.nama} ? {hero1 < hero2}")
+print(f"{hero1.nama} ({hero1.power_level}) < {hero2.nama} ({hero2.power_level}) ? {hero1 < hero2}")
+print(f"{hero2.nama} ({hero2.power_level}) < {hero3.nama} ({hero3.power_level}) ? {hero2 < hero3}")
 print("Hero terkuat (max):", max(hero1, hero2, hero3).nama)
 operator1.tampilkan_log()   # memakai __str__ pada DispatchLog
 ```
