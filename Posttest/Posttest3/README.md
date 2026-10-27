@@ -505,19 +505,11 @@ Contoh `__str__` pada log dispatch:
 [LOG] GAGAL | Operator: Player 1 | Misi: Penyelidikan Villain
 ```
 
-### 4. Tanpa anti-pattern
-
-Program tidak memakai rantai `if/elif` yang mengecek `type()` atau string jenis hero untuk menentukan perilaku. Setiap objek menentukan perilakunya sendiri lewat method (`aksi_khusus()`, `tampilkan_stats()`, `tangani()`, `nilai()`).
-
-### ABC atau duck typing?
-
-Sesuai panduan modul, ABC dipakai untuk hierarki kelas buatan sendiri yang kontraknya harus dijamin (`Hero`, `MissionEvaluator`). Duck typing dipakai untuk kelas yang berdiri sendiri dan fleksibel tanpa hierarki (`Competingcalls`, `Hackcalls`).
-
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Penerapan Prinsip SOLID (Nilai Plus)
+## Penerapan Prinsip SOLID
 
-Program menerapkan tiga prinsip SOLID. Ketiganya benar-benar ada di kode dan tidak mengurangi syarat wajib poin 1 sampai 3. Prinsip SRP dan ISP tidak diklaim karena tidak ada bagian kode yang dibuat khusus untuk keduanya.
+Program menerapkan tiga prinsip SOLID. Ketiganya benar-benar ada di kode. Prinsip SRP dan ISP tidak diklaim karena tidak ada bagian kode yang dibuat khusus untuk keduanya.
 
 ### 1. DIP (Dependency Inversion Principle) — penerapan utama
 

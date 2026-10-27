@@ -82,7 +82,9 @@ class Hero(ABC):
     def aksi_khusus(self):
         pass
 
-# Inheritance
+# Inheritance dan # LSP (Liskov Substitution Principle)
+# Semua subclass Hero menepati kontrak Hero (tampilkan_stats & aksi_khusus diimplementasikan penuh,
+# tidak ada method yang hanya melempar error), sehingga objek subclass bisa dipakai di mana pun Hero dipakai.
 class HeroCombat(Hero):
     TIPE = "Combat"
     def __init__(self, nama, power_level, persentase_sukses, senjata, status="Standby"):
@@ -129,12 +131,17 @@ class MissionEvaluator(ABC):
     def nilai(self, tim, misi):
         pass
 
+# OCP (Open/Closed Principle): aturan penilaian baru cukup ditambah sebagai subclass baru
+# dari MissionEvaluator, tanpa mengubah Dispatcher maupun penilai yang sudah ada.
+
+# penilaian konkret ditambahkan lewat kelas baru
 class TypeEvaluator(MissionEvaluator):
     def nilai(self, tim, misi):
         tipe_tim = [hero.tipe_hero for hero in tim]
         print(f"TypeEvaluator memeriksa tipe tim {tipe_tim} terhadap syarat misi {misi.syarat_tipe}")
         return all(syarat in tipe_tim for syarat in misi.syarat_tipe)
 
+# penilaian baru, Class dan data pada Dispatcher tidak diubah.
 class SuccessRateEvaluator(MissionEvaluator):
     def __init__(self, batas=90):
         self.batas = batas
