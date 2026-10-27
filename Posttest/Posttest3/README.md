@@ -9,7 +9,7 @@ Program aplikasi konsol berbasis Python untuk mengelola dan memproses pengiriman
 Program ini dibuat untuk mensimulasikan alur kerja operasional agensi hero. Sistem ini memiliki beberapa bagian utama:
 
 1. **Manajemen Hero (`Hero`)**
-   Class `Hero` adalah *abstract class* sekaligus superclass untuk jenis hero lain. Class ini menyimpan nama hero, status kesiapan hero (*Standby/Resting*), power level, dan persentase sukses.
+   Class `Hero` adalah abstract class sekaligus superclass untuk jenis hero lain. Class ini menyimpan nama hero, status kesiapan hero (*Standby/Resting*), power level, dan persentase sukses.
    Data penting seperti `persentase_sukses` disimpan secara private dan diakses melalui getter/setter.
 
 2. **Spesialisasi Hero (Inheritance)**
